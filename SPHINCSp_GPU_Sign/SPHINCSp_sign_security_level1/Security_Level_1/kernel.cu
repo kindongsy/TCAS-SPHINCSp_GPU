@@ -334,7 +334,7 @@ __device__ void GPU_fors_gen_sk(uint8_t* out, uint8_t* key, uint32_t* addr) {
     GPU_hash(outbuf, buf, HASH_DIGEST + HASH_ADDR_BYTES);
     memcpy(out, outbuf, HASH_DIGEST);
 }
-/// -> «ÿΩ√ «‘ºˆ ∫∞∑Œ state ≈©±‚ 40¿Œ¡ˆ »Æ¿Œ
+/// -> Ìï¥Ïãú Ìï®Ïàò Î≥ÑÎ°ú state ÌÅ¨Í∏∞ 40Ïù∏ÏßÄ ÌôïÏù∏
 __device__ void GPU_fors_sk_to_leaf(uint8_t* leaf, uint8_t* sk, uint8_t* pub_seed, uint32_t* fors_leaf_addr, uint8_t* state_seed) {
     uint8_t buf[HASH_ADDR_BYTES + HASH_DIGEST];
     uint8_t outbuf[HASH_OUTBYTE];
@@ -961,7 +961,7 @@ int crypto_sign_signature_security_level_1(uint8_t* sig, size_t* siglen, uint8_t
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);
     for (int i = 0; i < 1; i++) {
-        GPU_fors_sign_throughput_security_level_1_oneblock_bc << <msgNum, (1 << FORS_HEIGHT) >> > (gpu_fors_throughput_test, gpu_fors_throughput_indices, gpu_sk_seed, gpu_pub_seed, gpu_wots_addr, gpu_state_seed, gpu_fors_throughput_lengths);
+        GPU_fors_sign_throughput_security_level_1_oneblock << <msgNum, (1 << FORS_HEIGHT) >> > (gpu_fors_throughput_test, gpu_fors_throughput_indices, gpu_sk_seed, gpu_pub_seed, gpu_wots_addr, gpu_state_seed, gpu_fors_throughput_lengths);
         GPU_sphincs_tree_hash_security_level_1_oneblock << < msgNum, SUBTREE_LAYER* (1 << TREE_HEIGHT) >> > (gpu_fors_throughput_lengths, gpu_wots_throughput_sig, gpu_sk_seed, gpu_pub_seed, gpu_state_seed, gpu_idx_leaf, gpu_tree);
         GPU_sphincs_wots_sign_security_level_1_oneblock << < msgNum, WOTS_LEN* SUBTREE_LAYER >> > (gpu_wots_throughput_sig, gpu_fors_throughput_lengths, gpu_sk_seed, gpu_pub_seed, gpu_state_seed, gpu_idx_leaf, gpu_tree);
         cudaMemcpy(cpu_fors_sign, gpu_fors_throughput_test, msgNum * FORS_BYTES, cudaMemcpyDeviceToHost);
